@@ -17,8 +17,15 @@ class ClassesRessource extends JsonResource
         return [
             'id' => $this->id,
             'libelle' => $this->libelle,
-            'niveau_id' => $this->niveau_id,
-            'niveau' => $this->niveaux->libelle,
+            'niveau_id' => $this->niveaux_id,
+            'annee_scolaire_id' => $this->inscriptions->first()->annee_scolaire_id,
+            'eleves' => $this->inscriptions->map(function($inscription){
+                return [
+                    'id' => $inscription->eleve->id,
+                    'nom' => $inscription->eleve->nom,
+                    'prenom' => $inscription->eleve->prenom,
+                ];
+            })
         ];
     }
 }

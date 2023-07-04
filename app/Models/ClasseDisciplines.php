@@ -5,15 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Niveaux extends Model
+class ClasseDiscipline extends Model
 {
     use HasFactory;
-    protected $table = 'niveaux';
+    protected $table = 'classe_disciplines';
     protected $fillable = [
-        'libelle',
+        'classe_id',
+        'discipline_id',
     ];
-    public function classes()
-    {
-        return $this->hasMany(Classes::class);
-    }
 }

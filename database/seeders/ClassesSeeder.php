@@ -12,7 +12,6 @@ class ClassesSeeder extends Seeder
      */
     public function run(): void
     {
-        //remplir la classe Les classes correspondant aux niveauxx
         $classes = [
             [
                 'libelle' => 'CI',

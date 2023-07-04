@@ -5,24 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Classes extends Model
+class AnneeScolaire extends Model
 {
     use HasFactory;
-    protected $table = 'classes';
+    protected $table = 'annee_scolaires';
     protected $fillable = [
         'libelle',
+        'date_debut',
+        'date_fin',
+        'statut'
     ];
-    public function niveaux()
-    {
-        return $this->belongsTo(Niveaux::class, 'niveaux_id');
-    }
-    public function eleves()
-    {
-        return $this->hasMany(Eleve::class);
-    }
     public function inscriptions()
     {
         return $this->hasMany(Inscriptions::class);
     }
-
 }

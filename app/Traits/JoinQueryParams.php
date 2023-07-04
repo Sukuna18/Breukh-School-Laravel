@@ -2,12 +2,14 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+trait JoinQueryParams
+{
+    public function joinQuery($query, $join, $table)
+    {
+        if ($table->contains($join)) {
+            return $query->with($join);
+        }
 
-trait StudentTrait {
-  public function index() {
-      
-  }
+        return $query;
+    }
 }

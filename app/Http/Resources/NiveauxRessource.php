@@ -39,7 +39,7 @@ class NiveauxRessource extends JsonResource
             return [
                 'libelle' => $classe->libelle,
                 'id' => $classe->id,
-                'id_niveau' => $classe->niveaux_id,
+                'niveau_id' => $classe->niveaux_id,
             ];
         });
     }
