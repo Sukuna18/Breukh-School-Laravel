@@ -46,9 +46,6 @@ class EmailNotificationCommand extends Command
 
         Notification::send($eleves, new EmailNotification($content, $events, $users));
 
-        $this->info('Les e-mails ont été envoyés avec succès.');
-        
-
-        
+        $this->info('Notifications envoyées avec succès !');
     }
 }

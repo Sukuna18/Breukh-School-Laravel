@@ -102,6 +102,18 @@ class EventsController extends Controller
     }
     public function getParticipations($evenement)
     {
+        $content = "notification d'événements.";
+        $participations = EventsClasse::all();
+        $eventsIds = $participations->pluck('events_id')->toArray();
+        $classesIds = $participations->pluck('classes_id')->toArray();
+
+        $inscrit = \App\Models\Inscriptions::whereIn('classes_id', $classesIds)->get();
+        $eleves = \App\Models\Eleve::whereIn('id', $inscrit->pluck('eleve_id'))->get();
+
+        $events = Events::whereIn('id', $eventsIds)->get();
+        $userIds = $events->pluck('user_id')->toArray();
+        $users = \App\Models\User::whereIn('id', $userIds)->get();
+        dd($users, $eleves, $events, $content, $participations, $eventsIds, $classesIds, $inscrit);
         $participations = Events::where('id', $evenement)->get();
         return $participations;
     }

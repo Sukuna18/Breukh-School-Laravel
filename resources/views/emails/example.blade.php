@@ -1,7 +1,7 @@
 @component('mail::message')
 # Notification d'événement
 
-Bonjour ,
+Bonjour {{ $notifiable->name }},
 
 {!! $content !!}
 
