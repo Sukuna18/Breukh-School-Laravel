@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInscriptionsRequest;
 use App\Http\Requests\UpdateInscriptionsRequest;
+use App\Http\Resources\InscriptionRessource;
 use App\Models\Inscriptions;
 
 class InscriptionsController extends Controller
@@ -13,7 +14,8 @@ class InscriptionsController extends Controller
      */
     public function index()
     {
-        //
+        $all = Inscriptions::all();
+        return InscriptionRessource::collection($all);
     }
 
     /**

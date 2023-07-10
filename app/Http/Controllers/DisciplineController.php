@@ -31,10 +31,9 @@ class DisciplineController extends Controller
      */
     public function store(StoreDisciplineRequest $request)
     {
-        //creer linsertion pour la table discipline
         $discipline = Discipline::create([
             'libelle' => $request->libelle,
-            'code' => substr($request->libelle, 0, 3),
+            'code' => $request->code,
         ]);
         return new DisciplineRessource($discipline);
     }

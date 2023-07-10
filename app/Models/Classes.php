@@ -22,7 +22,17 @@ class Classes extends Model
     }
     public function inscriptions()
     {
-        return $this->hasMany(Inscriptions::class);
-    }
+        $annee = AnneeScolaire::where('statut', true)->first();
 
+        return $this->hasMany(Inscriptions::class)
+            ->where('annee_scolaire_id', $annee->id);
+    }
+    public function classeDisciplines()
+    {
+        return $this->hasMany(ClasseDiscipline::class);
+    }
+    public function events()
+    {
+        return $this->belongsToMany(Event::class, 'events_classes');
+    }
 }

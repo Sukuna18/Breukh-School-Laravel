@@ -10,6 +10,7 @@ use App\Models\AnneeScolaire;
 use App\Models\Code;
 use App\Models\Eleve;
 use App\Models\Inscriptions;
+use Illuminate\Http\Request;
 
 class EleveController extends Controller
 {
@@ -18,27 +19,19 @@ class EleveController extends Controller
      */
     public function index()
     {
+        
         $eleves = Eleve::join('inscriptions', 'eleves.id', '=', 'inscriptions.eleve_id')
             ->join('classes', 'classes.id', '=', 'inscriptions.classes_id')
             ->where('eleves.actif', true)
             ->get();
 
         return EleveRessource::collection($eleves);
-        // $elevesByClasse = Classes::join('inscriptions', 'classes.id', '=', 'inscriptions.classes_id')
-        //     ->join('eleves', 'inscriptions.eleve_id', '=', 'eleves.id')
-        //     ->join('annee_scolaires', 'inscriptions.annee_scolaire_id', '=', 'annee_scolaires.id')
-        //     ->select('eleves.*', 'classes.libelle as classe', 'annee_scolaires.libelle as annee_scolaire')
-        //     ->where('eleves.actif', 1)
-        //     ->orderBy('eleves.nom')
-        //     ->get();
-
-        // return EleveRessource::collection($elevesByClasse);
     }
 
     public function store(StoreEleveRequest $request)
     {
         DB::beginTransaction();
-    
+
         try {
             $eleve = Eleve::create([
                 'nom' => $request->nom,
@@ -47,8 +40,9 @@ class EleveController extends Controller
                 'lieu_naissance' => $request->lieu,
                 'gender' => $request->sexe,
                 'profil' => $request->profil,
+                'email' => $request->email,
             ]);
-            
+
             if ($request->profil == 1) {
                 $actif = Eleve::where('profil', 1)->where('actif', 1)->count();
                 $i = 1;
@@ -62,33 +56,33 @@ class EleveController extends Controller
                 }
                 $eleve->save();
             }
-    
+
             $annee = AnneeScolaire::where('statut', 1)->first();
             $classe = $request->classe;
-    
+
             Inscriptions::create([
                 'eleve_id' => $eleve->id,
                 'classes_id' => $classe,
                 'annee_scolaire_id' => $annee->id,
             ]);
-    
+
             DB::commit();
-    
+
             return response()->json([
                 'message' => 'Élève créé avec succès',
                 'data' => $eleve
             ], 201);
         } catch (\Exception $e) {
             DB::rollback();
-    
+
             return response()->json([
                 'message' => 'Une erreur s\'est produite lors de la création de l\'élève',
                 'error' => $e->getMessage()
             ], 500);
         }
     }
-    
-    
+
+
 
 
 
@@ -108,11 +102,23 @@ class EleveController extends Controller
     public function update(UpdateEleveRequest $request, Eleve $eleve)
     {
 
-        $eleve->actif = false;
-        $eleve->save();
-        return EleveRessource::collection(Eleve::all());
+        // $eleve->actif = false;
+        // $eleve->save();
+        // return EleveRessource::collection(Eleve::all());
     }
 
+    public function sortie(Request $request)
+    {
+        $data = [];
+        foreach ($request->data as $eleveData) {
+            $eleve = Eleve::find($eleveData['id']);
+            $eleve->update([
+                'actif' => $eleveData['actif'],
+            ]);
+            $data[] = $eleve;
+        }
+        return EleveRessource::collection($data);
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -122,52 +128,3 @@ class EleveController extends Controller
         return EleveRessource::collection(Eleve::all());
     }
 }
-// $eleve = Eleve::create([
-    //     'nom' => $request->nom,
-    //     'prenom' => $request->prenom,
-    //     'date_naissance' => $request->naissance,
-    //     'lieu_naissance' => $request->lieu,
-    //     'gender' => $request->sexe,
-    //     'profil' => $request->profil,
-    // ]);
-    
-    // if ($request->profil == 1) {
-        //     $lastEleve = Eleve::where('profil', 1)->whereNotNull('code')->orderBy('code', 'desc')->first();
-        
-        //     if ($lastEleve) {
-            //         $eleve->code = $lastEleve->code + 1;
-            //         $lastEleve->code = null;
-            //         $lastEleve->save();
-            //     } else {
-                //         $lastCode = Eleve::where('profil', 1)->max('code');
-                //         $eleve->code = $lastCode ? $lastCode + 1 : 1;
-                //     }
-                // }
-                
-                // $eleve->save();
-            
-                // $annee = AnneeScolaire::where('statut', 1)->first();
-                // $classe = $request->classe;
-                // Inscriptions::create([
-                    //     'eleve_id' => $eleve->id,
-                    //     'classes_id' => $classe,
-                    //     'annee_scolaire_id' => $annee->id,
-                    // ]);
-                    
-                    //working code
-                    // if ($request->profil == 1) {
-                        //     $actif = Code::orderBy('code', 'desc')->first();
-                        
-                        //     if ($actif == null) {
-                            //         $lastEleve = Eleve::where('profil', 1)->orderBy('code', 'desc')->first();
-                            //         $eleve->code = $lastEleve->code + 1;
-                            //     } else {
-                                //         $eleve->code = $actif->code;
-                                //         $actif->delete();
-                                //     }
-                                
-                                //     $eleve->save();
-                // }
-                                // Code::create([
-                                    //     'code' => $eleve->code,
-                                    // ]);

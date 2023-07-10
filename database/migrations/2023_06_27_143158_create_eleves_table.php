@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('prenom');
             $table->dateTime('date_naissance')->nullable();
             $table->string('lieu_naissance');
+            $table->string('email')->unique();
             $table->string('gender');
             $table->boolean('profil');
             $table->integer('code')->nullable();

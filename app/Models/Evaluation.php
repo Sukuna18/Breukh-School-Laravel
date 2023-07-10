@@ -12,4 +12,8 @@ class Evaluation extends Model
     protected $fillable = [
         'libelle',
     ];
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classe_disciplines', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(\App\Models\Classes::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(\App\Models\Discipline::class)->constrained()->cascadeOnDelete();
-            $table->integer('note')->nullable();
-            $table->string('max-note')->nullable();
+            $table->string('libelle');
+            $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
+            $table->dateTime('date_debut');
+            $table->dateTime('date_fin');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classe_disciplines');
+        Schema::dropIfExists('events');
     }
 };

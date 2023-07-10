@@ -13,7 +13,8 @@ class ClasseDisciplineController extends Controller
      */
     public function index()
     {
-        //
+        $all = ClasseDiscipline::all();
+        return $all;
     }
 
     /**
@@ -21,7 +22,7 @@ class ClasseDisciplineController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -29,7 +30,14 @@ class ClasseDisciplineController extends Controller
      */
     public function store(StoreClasseDisciplineRequest $request)
     {
-        //
+        $create = ClasseDiscipline::create([
+            'classes_id' => $request->classes_id,
+            'discipline_id' => $request->discipline_id,
+            'evaluation_id' => $request->evaluation_id,
+            'note' => $request->note,
+            'max_note' => $request->max_note,
+        ]);
+        return $create;
     }
 
     /**

@@ -12,4 +12,12 @@ class Discipline extends Model
     protected $fillable = [
         'libelle',
     ];
+    public function classe_disciplines()
+    {
+        return $this->hasMany(ClasseDiscipline::class);
+    }
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }

@@ -19,4 +19,8 @@ class AnneeScolaire extends Model
     {
         return $this->hasMany(Inscriptions::class);
     }
+    public function notes()
+    {
+        return $this->hasMany(Notes::class);
+    }
 }

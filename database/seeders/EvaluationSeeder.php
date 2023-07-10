@@ -15,19 +15,18 @@ class EvaluationSeeder extends Seeder
         $evaluation = [
             [
                 'libelle' => 'Devoir',
-                'max_note' => 20
             ],
             [
                 'libelle' => 'Interrogation',
-                'max_note' => 20
             ],
             [
                 'libelle' => 'Composition',
-                'max_note' => 20
             ],
             [
                 'libelle' => 'Examen',
-                'max_note' => 20
+            ],
+            [
+                'libelle' => 'Devoir Maison',
             ],
         ];
         \App\Models\Evaluation::insert($evaluation);

@@ -19,6 +19,10 @@ class DatabaseSeeder extends Seeder
             AnneeScolaireSeeder::class,
             DisciplineSeeder::class,
             EvaluationSeeder::class,
+            SemestreSeeder::class,
+            ClasseDisciplineSeeder::class,
+            UserSeeder::class,
+            EventsSeeder::class,
         ]);
 
         // \App\Models\User::factory()->create([

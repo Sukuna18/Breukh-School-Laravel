@@ -13,7 +13,8 @@ class EvaluationController extends Controller
      */
     public function index()
     {
-        //
+        $all = Evaluation::all();
+        return $all;
     }
 
     /**
@@ -21,7 +22,6 @@ class EvaluationController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -29,7 +29,10 @@ class EvaluationController extends Controller
      */
     public function store(StoreEvaluationRequest $request)
     {
-        //
+        $create = Evaluation::create([
+            'libelle' => $request->libelle,
+        ]);
+        return $create;
     }
 
     /**

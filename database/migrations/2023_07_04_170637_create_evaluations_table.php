@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('evaluations', function (Blueprint $table) {
             $table->id();
             $table->string('libelle');
-            $table->integer('max_note');
             $table->timestamps();
         });
     }
