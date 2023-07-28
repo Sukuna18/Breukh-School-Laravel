@@ -20,6 +20,7 @@ class NoteRessource extends JsonResource
             'note' => $this->note,
             'evaluation' => $this->classe_discipline->evaluation->libelle,
             'eleve' => $this->inscriptions->eleve->prenom . ' ' . $this->inscriptions->eleve->nom,
+            'id_eleve' => $this->inscriptions->eleve->id,
             'discipline' => $this->whenLoaded('classe_discipline', function () {
                 return $this->classe_discipline->discipline->libelle;
             }),

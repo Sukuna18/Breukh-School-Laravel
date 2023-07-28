@@ -27,7 +27,7 @@ class Classes extends Model
         return $this->hasMany(Inscriptions::class)
             ->where('annee_scolaire_id', $annee->id);
     }
-    public function classeDisciplines()
+    public function classe_discipline()
     {
         return $this->hasMany(ClasseDiscipline::class);
     }

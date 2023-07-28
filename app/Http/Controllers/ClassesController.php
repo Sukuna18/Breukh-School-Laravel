@@ -59,10 +59,12 @@ class ClassesController extends Controller
      */
     public function show(Classes $classes, Request $request)
     {
-        if ($request->input('join') === 'eleves') {
-            return new ClassesRessource($classes->load('inscriptions'));
+        $associations = $request->input('join', '');
+        $associationsArray = explode(',', $associations);
+        $with = false;
+        foreach ($associationsArray as $association) {
+            $this->jointure($classes, $association, $with);
         }
-
         return new ClassesRessource($classes);
     }
 
@@ -250,18 +252,59 @@ class ClassesController extends Controller
     public function getNotesByDiscipline($classes, $disciplines)
     {
         $annee = AnneeScolaire::where('statut', true)->first();
-        $classe = Classes::find($classes);
-        $discipline = Discipline::find($disciplines);
-        $semestre = Semestre::where('statut', true)->first();
-        $classeDisciplines = ClasseDiscipline::where('classes_id', $classe->id)
-            ->where('discipline_id', $discipline->id)
-            ->where('semestre_id', $semestre->id)
-            ->get();
-        $note = Note::whereIn('classe_discipline_id', $classeDisciplines->pluck('id'))
-            ->where('annee_scolaire_id', $annee->id)
-            ->get();
-        return NoteRessource::collection($note->load('classe_discipline'));
+    $classe = Classes::find($classes);
+    $discipline = Discipline::find($disciplines);
+    $semestre = Semestre::where('statut', true)->first();
+    $classeDisciplines = ClasseDiscipline::where('classes_id', $classe->id)
+        ->where('discipline_id', $discipline->id)
+        ->where('semestre_id', $semestre->id)
+        ->get();
+    $notes = Note::whereIn('classe_discipline_id', $classeDisciplines->pluck('id'))
+        ->where('annee_scolaire_id', $annee->id)
+        ->get();
+
+    $formattedNotes = [];
+
+    foreach ($notes as $note) {
+            $eleveId = $note->inscriptions->eleve->id;
+            $eleveName = $note->inscriptions->eleve->prenom . ' ' . $note->inscriptions->eleve->nom;
+
+            $eleveExists = false;
+            foreach ($formattedNotes as &$formattedNote) {
+                    if ($formattedNote['id_eleve'] === $eleveId) {
+                            $eleveExists = true;
+                $formattedNote['notes'][] = [
+                        'id_note' => $note->id,
+                        'note' => $note->note,
+                        'evaluation' => $note->classe_discipline->evaluation->libelle,
+                        'discipline' => $note->classe_discipline->discipline->libelle,
+                    ];
+                    break;
+                }
+        }
+
+        if (!$eleveExists) {
+            $formattedNotes[] = [
+                    'id_eleve' => $eleveId,
+                    'eleve' => $eleveName,
+                    'notes' => [
+                    [
+                            'id_note' => $note->id,
+                            'note' => $note->note,
+                            'evaluation' => $note->classe_discipline->evaluation->libelle,
+                            'discipline' => $note->classe_discipline->discipline->libelle,
+                        ],
+                    ],
+                ];
+            }
+        }
+    
+        return response()->json([
+                'data' => $formattedNotes,
+            ]);
+
     }
+
     public function getNotesByClasse($classes)
     {
         $semestre = Semestre::where('statut', true)->first();
@@ -297,3 +340,81 @@ class ClassesController extends Controller
         return NoteRessource::collection($notes->load('classe_discipline'));
     }
 }
+
+
+// $annee = AnneeScolaire::where('statut', true)->first();
+//     $classe = Classes::find($classes);
+//     $discipline = Discipline::find($disciplines);
+//     $semestre = Semestre::where('statut', true)->first();
+//     $classeDisciplines = ClasseDiscipline::where('classes_id', $classe->id)
+//         ->where('discipline_id', $discipline->id)
+//         ->where('semestre_id', $semestre->id)
+//         ->get();
+//     $notes = Note::whereIn('classe_discipline_id', $classeDisciplines->pluck('id'))
+//         ->where('annee_scolaire_id', $annee->id)
+//         ->get();
+
+//     $formattedNotes = [];
+
+//     foreach ($notes as $note) {
+//             $eleveId = $note->inscriptions->eleve->id;
+//             $eleveName = $note->inscriptions->eleve->prenom . ' ' . $note->inscriptions->eleve->nom;
+
+//             $eleveExists = false;
+//             foreach ($formattedNotes as &$formattedNote) {
+//                     if ($formattedNote['id_eleve'] === $eleveId) {
+//                             $eleveExists = true;
+//                 $formattedNote['notes'][] = [
+//                         'id_note' => $note->id,
+//                         'note' => $note->note,
+//                         'evaluation' => $note->classe_discipline->evaluation->libelle,
+//                         'discipline' => $note->classe_discipline->discipline->libelle,
+//                     ];
+//                     break;
+//                 }
+//         }
+
+//         if (!$eleveExists) {
+//             $formattedNotes[] = [
+//                     'id_eleve' => $eleveId,
+//                     'eleve' => $eleveName,
+//                     'notes' => [
+//                     [
+//                             'id_note' => $note->id,
+//                             'note' => $note->note,
+//                             'evaluation' => $note->classe_discipline->evaluation->libelle,
+//                             'discipline' => $note->classe_discipline->discipline->libelle,
+//                         ],
+//                     ],
+//                 ];
+//             }
+//         }
+    
+//         return response()->json([
+//                 'data' => $formattedNotes,
+//             ]);
+
+
+
+
+        # code...join params
+
+
+
+
+        // $validAssociations = ['niveaux', 'inscriptions', 'classe_discipline'];
+        // $loadAssociations = [];
+        
+        // foreach ($associationsArray as $association) {
+        //     if (in_array($association, $validAssociations)) {
+        //         $loadAssociations[] = $association;
+        //     }
+        // }
+        
+        // if (empty($loadAssociations)) {
+        //     return new ClassesRessource($classes);
+        // }
+        
+        // $classes->load($loadAssociations);
+        
+        // return new ClassesRessource($classes);

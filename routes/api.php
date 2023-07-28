@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,3 +43,24 @@ Route::post('/evenements', [App\Http\Controllers\EventsController::class, 'store
 Route::get('/evenements', [App\Http\Controllers\EventsController::class, 'index']);
 Route::post('/evenements/{evenement}/participations', [App\Http\Controllers\EventsController::class, 'addParticipation']);
 Route::get('/evenements/{evenement}/participations', [App\Http\Controllers\EventsController::class, 'getParticipations']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('users', [App\Http\Controllers\UserController::class, 'store']);
+Route::get('users', [App\Http\Controllers\UserController::class, 'index']);
+Route::get('users/{user}', [App\Http\Controllers\UserController::class, 'show']);
+Route::put('users/{user}', [App\Http\Controllers\UserController::class, 'update']);
+Route::delete('users/{user}', [App\Http\Controllers\UserController::class, 'destroy']);
+
+Route::middleware('auth:api')->group(function () {
+
+  Route::get('user', function (Request $request) {
+    return $request->user();
+  });
+
+  Route::post('users/{id}/logout', function (Request $request, $id) {
+    $user = App\Models\User::find($id);
+    $user->tokens()->delete();
+    // $request->user()->token()->revoke();
+    return response()->json(['message' => 'Logged out'], 200);
+  });
+
+});

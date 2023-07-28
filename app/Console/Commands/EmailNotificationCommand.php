@@ -25,7 +25,7 @@ class EmailNotificationCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Envoie de message aux eleves';
 
     /**
      * Execute the console command.
@@ -38,7 +38,9 @@ class EmailNotificationCommand extends Command
         $classesIds = $participations->pluck('classes_id')->toArray();
 
         $inscrit = Inscriptions::whereIn('classes_id', $classesIds)->get();
-        $eleves = Eleve::whereIn('id', $inscrit->pluck('eleve_id'))->get();
+        $eleves = Eleve::whereIn('id', $inscrit->pluck('eleve_id'))
+        ->where('actif', true)
+        ->get();
 
         $events = Events::whereIn('id', $eventsIds)->get();
         $userIds = $events->pluck('user_id')->toArray();

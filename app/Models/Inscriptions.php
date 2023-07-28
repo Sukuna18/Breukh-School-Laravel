@@ -24,4 +24,7 @@ class Inscriptions extends Model
     public function annee_scolaire(): BelongsTo{
         return $this->belongsTo(AnneeScolaire::class);
     }
+    public function notes(){
+        return $this->hasMany(Note::class);
+    }
 }

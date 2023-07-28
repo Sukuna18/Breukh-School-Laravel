@@ -18,7 +18,7 @@ class NiveauxController extends Controller
 
             $niveaux = Niveaux::query()
         ->when($join !== false, function ($query) use ($join, $table) {
-            return $this->joinQuery($query, $join, $table);
+            return $this->jointure($query, $join, $table);
         })
         ->get();
 

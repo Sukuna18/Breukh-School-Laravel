@@ -36,7 +36,7 @@ class ClasseDisciplineSeeder extends Seeder
             ],
             [
                 'classes_id' => 1,
-                'discipline_id' => 4,
+                'discipline_id' => 1,
                 'evaluation_id' => 4,
                 'semestre_id' => 1,
                 'max_note' => 20,
